@@ -1,0 +1,4 @@
+// background
+
+void loadBackground(),
+	updateBackground();

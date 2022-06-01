@@ -1,0 +1,4 @@
+// start
+
+void loadStart(),
+	updateStart();

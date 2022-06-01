@@ -1,0 +1,4 @@
+// stage
+
+void loadStage(),
+	updateStage();
