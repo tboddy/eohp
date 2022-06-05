@@ -9,6 +9,8 @@
 #include "players.h"
 #include "enemies.h"
 
+#define SEAL_OFF FIX16(24)
+
 
 // lifecycle
 
@@ -21,7 +23,7 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
 		enemies[i].off.y = FIX16(spawner.offY);
 		enemies[i].pos.x = FIX16(spawner.x);
 		enemies[i].pos.y = FIX16(spawner.y);
-		enemies[i].dist = fix16ToFix32(enemies[i].off.x);
+		enemies[i].dist = intToFix32(spawner.offX + 1);
 		enemies[i].speed = spawner.speed;
 		enemies[i].angle = spawner.angle;
 		enemies[i].boss = spawner.boss;
@@ -51,12 +53,43 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
 		SPR_setFrame(enemies[i].image, spawner.frame ? spawner.frame : 0);
 		SPR_setDepth(enemies[i].image, 5);
 		SPR_setVisibility(enemies[i].image, HIDDEN);
+		if(spawner.seal){
+			enemies[i].seal = TRUE;
+			enemies[i].sealImage = SPR_addSprite(&seal,
+				fix16ToInt(fix16Sub(enemies[i].pos.x, SEAL_OFF)),
+				fix16ToInt(fix16Sub(enemies[i].pos.y, SEAL_OFF)),
+				TILE_ATTR(PAL2, 0, 0, 0));
+			SPR_setAnim(enemies[i].sealImage, spawner.anim ? spawner.anim : 0);
+			SPR_setDepth(enemies[i].sealImage, 6);
+		}
 	}
 }
 
 void killEnemy(s16 i){
 	enemies[i].active = FALSE;
 	SPR_releaseSprite(enemies[i].image);
+	if(enemies[i].seal){
+		enemies[i].seal = FALSE;
+		SPR_releaseSprite(enemies[i].sealImage);
+	}
+}
+
+
+// collision
+
+void collideEnemy(s16 i){
+	// enemyDist = getApproximatedDistance(
+	// 	fix16ToFix32(fix16Sub(players[j].pos.x, enemies[i].pos.x)),
+	// 	fix16ToFix32(fix16Sub(players[j].pos.y, enemies[i].pos.y)));
+	// if(enemyDist <= fix32Add(players[j].dist, enemies[i].dist)){
+	// 	spawnExplosion(players[j].pos.x, players[j].pos.y, 1);
+	// 	// XGM_startPlayPCM(random() % 2 < 1 ? SFX_EXPLOSION_1 : SFX_EXPLOSION_2, 1, SOUND_PCM_CH4);
+	// 	players[j].invincible = TRUE;
+	// 	players[j].invincibleClock = INVINCIBLE_LIMIT;
+	// 	// players[j].lives--;
+	// 	// if(players[j].lives < 0) killPlayer();
+	// 	if(!enemies[i].boss) killEnemy(i);
+	// }
 }
 
 
@@ -76,6 +109,7 @@ static void updateEnemy(s16 i){
 		enemies[i].pos.y < fix16Sub(0, enemies[i].off.y) ||
 		enemies[i].pos.y > fix16Add(FIX16(GAME_H), enemies[i].off.y))){
 		killEnemy(i);
+		enemies[i].suicide(i);
 	} else {
 		if(!enemies[i].seen && enemies[i].pos.x <= fix16Add(FIX16(GAME_W), enemies[i].off.y)){
 			enemies[i].seen = TRUE;
@@ -85,13 +119,18 @@ static void updateEnemy(s16 i){
 		enemies[i].pos.y = fix16Add(enemies[i].pos.y, enemies[i].vel.y);
 		if(enemies[i].seen){
 			enemies[i].updater(i);
-			// if(enemies[i].boss) bossHealth = enemies[i].health;
-			// if(!players[enemies[i].p2 ? 1 : 0].invincible || enemies[i].drink) collideEnemy(i, enemies[i].p2 ? 1 : 0);
+			if(enemies[i].boss) bossHealth = enemies[i].health;
+			collideEnemy(i);
 			enemies[i].clock++;
 			if(clock >= CLOCK_LIMIT) clock -= CLOCK_LIMIT;
 			SPR_setPosition(enemies[i].image,
 				fix16ToInt(fix16Sub(enemies[i].pos.x, enemies[i].off.x)),
 				fix16ToInt(fix16Sub(enemies[i].pos.y, enemies[i].off.y)));
+			if(enemies[i].seal){
+				SPR_setPosition(enemies[i].sealImage,
+					fix16ToInt(fix16Sub(enemies[i].pos.x, SEAL_OFF)),
+					fix16ToInt(fix16Sub(enemies[i].pos.y, SEAL_OFF)));
+			}
 		}
 	}
 }

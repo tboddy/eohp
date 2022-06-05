@@ -15,7 +15,7 @@ struct bulletSpawner {
 };
 
 struct bullet {
-	bool active, player, p2, ball, flipped, powerup;
+	bool active, player, p2, ball, flipped, powerup, dead;
 	fix16 speed;
 	fix32 dist;
 	Vect2D_f16 pos, vel, off;
@@ -27,6 +27,8 @@ struct bullet {
 	fix16 fixes[B_COUNT_INT];
 };
 struct bullet bullets[BULLET_COUNT];
+
+bool killBullets;
 
 void spawnBullet(struct bulletSpawner, void(*updater)),
 	killBullet(s16),

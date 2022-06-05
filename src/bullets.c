@@ -5,6 +5,7 @@
 
 #include "main.h"
 #include "controls.h"
+#include "enemies.h"
 #include "bullets.h"
 #include "players.h"
 
@@ -47,7 +48,7 @@ void spawnBullet(struct bulletSpawner spawner, void(*updater)){
 			fix16ToInt(fix16Sub(bullets[i].pos.x, bullets[i].off.x)),
 			fix16ToInt(fix16Sub(bullets[i].pos.y, bullets[i].off.y)),
 			TILE_ATTR(PAL1, 0, 0, 0));
-		SPR_setDepth(bullets[i].image, 2);
+		SPR_setDepth(bullets[i].image, 4);
 		SPR_setFrame(bullets[i].image, spawner.frame ? spawner.frame : 0);
 	}
 }
@@ -55,6 +56,10 @@ void spawnBullet(struct bulletSpawner spawner, void(*updater)){
 void killBullet(s16 i){
 	bullets[i].active = FALSE;
 	SPR_releaseSprite(bullets[i].image);
+	if(bullets[i].dead){
+		spawnExplosion(bullets[i].pos.x, bullets[i].pos.y);
+		bullets[i].dead = FALSE;
+	}
 }
 
 
@@ -73,12 +78,54 @@ void updateBulletVel(s16 i){
 #define BULLET_LIMIT_Y 0
 #define BULLET_LIMIT_Z FIX16(GAME_H)
 
+fix32 bulletDist;
+
+static void collideBulletWithEnemy(s16 i){
+	for(s16 j = 0; j < ENEMY_COUNT; j++) if(enemies[j].active && enemies[j].seen){
+		bulletDist = getApproximatedDistance(
+			fix16ToFix32(fix16Sub(enemies[j].pos.x, bullets[i].pos.x)),
+			fix16ToFix32(fix16Sub(enemies[j].pos.y, bullets[i].pos.y)));
+		if(bulletDist <= fix32Add(enemies[j].dist, bullets[i].dist)){
+			bullets[i].dead = TRUE;
+			killBullet(i);
+			enemies[j].health--;
+			if(enemies[j].health <= 0){
+				enemies[j].suicide(j);
+				killEnemy(j);
+				// SND_startPlayPCM_XGM(SFX_EXPLOSION_2, 15, SOUND_PCM_CH2);
+			}
+		}
+	}
+}
+
+static void collideBulletWithPlayer(s16 i, u8 j){
+	// bulletDist = getApproximatedDistance(
+	// 	fix16ToFix32(fix16Sub(players[j].pos.x, bullets[i].pos.x)),
+	// 	fix16ToFix32(fix16Sub(players[j].pos.y, bullets[i].pos.y)));
+	// if(bulletDist <= fix32Add(players[j].dist, bullets[i].dist)){
+	// 	spawnExplosion(players[j].pos.x, players[j].pos.y);
+	// 	// XGM_startPlayPCM(SFX_EXPLOSION_1, 1, SOUND_PCM_CH4);
+	// 	// for(s16 j = 0; j < BULLET_COUNT; j++) if(bullets[j].active){
+	// 	// 	if(j < EXPLOSION_LIMIT / 2) spawnExplosion(bullets[j].pos.x, bullets[j].pos.y, 0);
+	// 	// 	killBullet(j);
+	// 	// }
+	// 	// player.invincible = TRUE;
+	// 	// player.invincibleClock = INVINCIBLE_LIMIT;
+	// 	// player.lives--;
+	// 	// if(player.lives < 0) killPlayer();
+	// }
+}
+
 static void collideBullet(s16 i){
 	if(bullets[i].pos.x < fix16Sub(BULLET_LIMIT_X, bullets[i].off.x) ||
 		bullets[i].pos.x > fix16Add(BULLET_LIMIT_W, bullets[i].off.x) ||
 		bullets[i].pos.y < fix16Sub(BULLET_LIMIT_Y, bullets[i].off.y) ||
 		bullets[i].pos.y > fix16Add(BULLET_LIMIT_Z, bullets[i].off.y)){
 		killBullet(i);
+	} else if(bullets[i].player){
+		collideBulletWithEnemy(i);
+	} else {
+		// collideBulletWithPlayer(0, 0);
 	}
 }
 
@@ -98,5 +145,13 @@ static void updateBullet(s16 i){
 }
 
 void updateBullets(){
-	for(s16 i = 0; i < BULLET_COUNT; i++) if(bullets[i].active) updateBullet(i);
+	if(killBullets){
+		for(s16 i = 0; i < BULLET_COUNT; i++) if(bullets[i].active){
+			if(i % 5 == 0) bullets[i].dead = TRUE;
+			killBullet(i);
+		}
+		killBullets = FALSE;
+	} else {
+		for(s16 i = 0; i < BULLET_COUNT; i++) if(bullets[i].active) updateBullet(i);
+	}
 }

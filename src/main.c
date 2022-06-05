@@ -12,6 +12,7 @@
 #include "players.h"
 #include "chrome.h"
 #include "start.h"
+#include "explosion.h"
 
 // resources
 
@@ -78,6 +79,9 @@ static void updateGame(){
 	updateEnemies();
 	updatePlayers();
 	updateChrome();	
+	updateDialogue();
+	updateCutscenes();
+	updateExplosions();
 	clock++;
 	if(clock >= CLOCK_LIMIT) clock -= CLOCK_LIMIT;
 }

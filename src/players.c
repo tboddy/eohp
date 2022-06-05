@@ -14,7 +14,7 @@
 
 #define PLAYER_INIT_DIFF 32
 #define PLAYER_INIT_X FIX16(32)
-#define PLAYER_INIT_Y FIX16(GAME_H / 2 - PLAYER_INIT_DIFF)
+#define PLAYER_INIT_Y FIX16(GAME_H / 2)
 #define PLAYER_INIT_Y_P2 FIX16(GAME_H / 2 + PLAYER_INIT_DIFF)
 
 void spawnPlayer(bool p2){
@@ -31,7 +31,7 @@ void spawnPlayer(bool p2){
 		fix16ToInt(fix16Sub(players[i].pos.x, players[i].off.x)),
 		fix16ToInt(fix16Sub(players[i].pos.y, players[i].off.y)),
 		TILE_ATTR(PAL1, 0, 0, 0));
-	SPR_setDepth(players[i].image, 1);
+	SPR_setDepth(players[i].image, 3);
 }
 
 
@@ -42,8 +42,8 @@ void spawnPlayer(bool p2){
 #define PLAYER_LIMIT_Y FIX16(4)
 #define PLAYER_LIMIT_H FIX16(GAME_H - 3)
 
-#define PLAYER_SPEED FIX16(2.5)
-#define PLAYER_SPEED_FOCUS FIX16(1.5)
+#define PLAYER_SPEED FIX16(2)
+#define PLAYER_SPEED_FOCUS FIX16(1.25)
 
 static void updatePlayerBounds(u8 i){
 	if(players[i].pos.x < PLAYER_LIMIT_X) players[i].pos.x = PLAYER_LIMIT_X;
@@ -103,7 +103,7 @@ static void spawnPlayerBullet(u8 i){
 
 static void updatePlayerShot(u8 i){
 	if(players[i].shotClock >= SHOT_INTERVAL && ctrl.a) players[i].shotClock = 0;
-	if(players[i].shotClock == 0) spawnPlayerBullet(i);
+	if(players[i].shotClock == 0 && !inCutscene) spawnPlayerBullet(i);
 	players[i].shotClock++;
 	if(players[i].shotClock >= CLOCK_LIMIT) players[i].shotClock = SHOT_INTERVAL;
 }
