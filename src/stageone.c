@@ -265,7 +265,7 @@ void wriggle(){
 				}
 
 				// shoot
-				if(enemies[i].health >= 20){
+				if(enemies[i].health >= 25){
 					if(enemies[i].clock % 15 == 0){
 						struct bulletSpawner spawner = {
 							.angle = 416,
@@ -275,8 +275,8 @@ void wriggle(){
 							.image = &smallGreenBullet
 						};
 						if(enemies[i].clock % 30 == 15){
-							spawner.big = TRUE;
-							spawner.image = &bigGreenBullet;
+							// spawner.big = TRUE;
+							// spawner.image = &bigGreenBullet;
 						}
 						void updater(s16 j){
 							if(bullets[j].clock % 2 == 1){
@@ -295,15 +295,15 @@ void wriggle(){
 					if(enemies[i].clock % 240 >= 155 && enemies[i].clock % 240 < 175 && enemies[i].clock % 10 == 5){
 						if(enemies[i].clock % 240 == 155) enemies[i].ints[6] = 256 - 32 + random() % 64;
 						struct bulletSpawner spawner = {
-							.angle = enemies[i].ints[6] + 64,
-							.speed = FIX16(1.5),
+							.angle = enemies[i].ints[6] + 64 + 16,
+							.speed = FIX16(1.25),
 							.x = enemies[i].pos.x,
 							.y = enemies[i].pos.y,
 							.image = &bigYellowBullet,
 							.big = TRUE
 						};
-						if(enemies[i].clock % 240 == 165) spawner.speed = fix16Add(spawner.speed, FIX16(0.5));
-						for(u8 j = 0; j < 5; j++){
+						if(enemies[i].clock % 240 == 165) spawner.speed = fix16Add(spawner.speed, FIX16(0.75));
+						for(u8 j = 0; j < 4; j++){
 							spawner.angle += 64;
 							spawnBullet(spawner, EMPTY);
 						}
@@ -314,7 +314,7 @@ void wriggle(){
 						killBullets = TRUE;
 						enemies[i].clock = -1;
 					} else {
-						if(enemies[i].clock % 30 == 0){
+						if(enemies[i].clock % 20 == 0){
 							if(enemies[i].clock % 120 == 0){
 								enemies[i].ints[6] = 256 - 64 + random() % 32;
 								enemies[i].bools[6] = enemies[i].clock % 240 == 0;
@@ -329,7 +329,7 @@ void wriggle(){
 							enemies[i].ints[6] += enemies[i].bools[6] ? -40 : 40;
 							void updater(s16 j){
 								if(bullets[j].bools[0] && bullets[j].clock == 30){
-									bullets[j].vel = hone(bullets[j].pos, players[0].pos, FIX16(1.75), 48);
+									bullets[j].vel = hone(bullets[j].pos, players[0].pos, FIX16(1.75), 64);
 								} else if(bullets[j].clock > 0 && bullets[j].clock % 5 == 0 && !bullets[j].bools[0]){
 									bullets[j].speed = fix16Sub(bullets[j].speed, FIX16(0.25));
 									updateBulletVel(j);
@@ -346,7 +346,7 @@ void wriggle(){
 						}
 						if(enemies[i].clock % 120 == 45){
 							struct bulletSpawner spawner = {
-								.angle = 320,
+								.angle = 320 + 32,
 								.speed = FIX16(1.5),
 								.x = enemies[i].pos.x,
 								.y = enemies[i].pos.y,
@@ -359,7 +359,7 @@ void wriggle(){
 									updateBulletVel(j);
 								}
 							}
-							for(u8 j = 0; j < 5; j++){
+							for(u8 j = 0; j < 4; j++){
 								spawner.bools[0] = FALSE;
 								spawner.angle += 64;
 								spawnBullet(spawner, updater);
