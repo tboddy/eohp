@@ -86,14 +86,14 @@ static void collideBulletWithEnemy(s16 i){
 			fix16ToFix32(fix16Sub(enemies[j].pos.x, bullets[i].pos.x)),
 			fix16ToFix32(fix16Sub(enemies[j].pos.y, bullets[i].pos.y)));
 		if(bulletDist <= fix32Add(enemies[j].dist, bullets[i].dist)){
-			bullets[i].dead = TRUE;
-			killBullet(i);
 			enemies[j].health--;
 			if(enemies[j].health <= 0){
 				enemies[j].suicide(j);
 				killEnemy(j);
+				spawnExplosion(enemies[j].pos.x, enemies[j].pos.y);
 				// SND_startPlayPCM_XGM(SFX_EXPLOSION_2, 15, SOUND_PCM_CH2);
-			}
+			} else bullets[i].dead = TRUE;
+			killBullet(i);
 		}
 	}
 }
@@ -147,7 +147,7 @@ static void updateBullet(s16 i){
 void updateBullets(){
 	if(killBullets){
 		for(s16 i = 0; i < BULLET_COUNT; i++) if(bullets[i].active){
-			if(i % 5 == 0) bullets[i].dead = TRUE;
+			if(i % 4 == 0) bullets[i].dead = TRUE;
 			killBullet(i);
 		}
 		killBullets = FALSE;

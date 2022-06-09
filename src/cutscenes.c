@@ -186,6 +186,33 @@ static void updateStageOneCutsceneOne(){
 	}
 }
 
+static void updateStageOneCutsceneTwo(){
+	if(!dialogueActive){
+		switch(currentDialogue){
+
+			case 0: dialogue(TRUE, "WRIGGLE",
+				"Okay, okay, that's",
+				"enough. You're way",
+				"too powerful.", "", 1, 2, FALSE); break;
+
+			case 1: dialogue(FALSE, "FLANDRE",
+				"Thank you!",
+				"", "", "", 0, 2, FALSE); break;
+
+			case 2: dialogue(TRUE, "WRIGGLE",
+				"...You didn't have to",
+				"rub that in... Ouch.",
+				"", "", 1, 2, FALSE); break;
+
+			case 3:
+				inCutscene = FALSE;
+				waveClock = 1;
+				break;
+		}
+		currentDialogue++;
+	}
+}
+
 
 // main loop
 
@@ -199,6 +226,7 @@ void updateCutscenes(){
 	if(inCutscene){
 		switch(currentCutscene){
 			case 0: updateStageOneCutsceneOne(); break;
+			case 1: updateStageOneCutsceneTwo(); break;
 		}
 	}
 }

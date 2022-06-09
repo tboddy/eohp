@@ -21,7 +21,10 @@ s16 bgClock;
 #define STAGE_ONE_WATER_Y 19
 #define STAGE_ONE_WATER_W 12
 #define STAGE_ONE_WATER_LIMIT STAGE_ONE_WATER_W * -8
-#define STAGE_ONE_CLOUDS_Y 6
+#define STAGE_ONE_SKY_Y 4
+#define STAGE_ONE_SKY_H 11
+#define STAGE_ONE_SKY2_H 4
+#define STAGE_ONE_CLOUDS_Y 7
 #define STAGE_ONE_CLOUDS_W 32
 #define STAGE_ONE_CLOUDS_LIMIT STAGE_ONE_CLOUDS_W * -8
 
@@ -33,8 +36,8 @@ static void loadStageOne(){
 		VDP_drawImageEx(BG_B, &stageOneWater, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I), x * STAGE_ONE_WATER_W, STAGE_ONE_WATER_Y, 0, DMA);
 	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352 + 1), 0, 26, GAME_TILE_W, 2);
 	// sky
-	VDP_drawImageEx(BG_B, &stageOneSky, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84), 0, 3, 0, DMA);
-	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352), 0, 14, GAME_TILE_W, 5);
+	VDP_drawImageEx(BG_B, &stageOneSky, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84), 0, STAGE_ONE_SKY_Y, 0, DMA);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352), 0, STAGE_ONE_SKY_Y + STAGE_ONE_SKY_H, GAME_TILE_W, STAGE_ONE_SKY2_H);
 	// clouds
 	for(u8 x = 0; x < 2; x++)
 		VDP_drawImageEx(BG_A, &stageOneClouds, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352 + 2), x * STAGE_ONE_CLOUDS_W, STAGE_ONE_CLOUDS_Y, 0, DMA);

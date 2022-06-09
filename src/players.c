@@ -42,7 +42,7 @@ void spawnPlayer(bool p2){
 #define PLAYER_LIMIT_Y FIX16(4)
 #define PLAYER_LIMIT_H FIX16(GAME_H - 3)
 
-#define PLAYER_SPEED FIX16(2)
+#define PLAYER_SPEED FIX16(2.25)
 #define PLAYER_SPEED_FOCUS FIX16(1.25)
 
 static void updatePlayerBounds(u8 i){
