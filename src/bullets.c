@@ -18,9 +18,14 @@ void spawnBullet(struct bulletSpawner spawner, void(*updater)){
 		bullets[i].active = TRUE;
 		bullets[i].pos.x = spawner.x;
 		bullets[i].pos.y = spawner.y;
-		bullets[i].off.x = FIX16(spawner.big ? 8 : 4);
-		bullets[i].off.y = bullets[i].off.x;
-		bullets[i].dist = fix16ToFix32(fix16Sub(bullets[i].off.x, FIX16(3)));
+		if(spawner.player){
+			bullets[i].off.x = FIX16(16);
+			bullets[i].off.y = FIX16(4);
+		} else {
+			bullets[i].off.x = FIX16(spawner.big ? 8 : 4);
+			bullets[i].off.y = bullets[i].off.x;
+		}
+		bullets[i].dist = spawner.player ? FIX32(8) : fix16ToFix32(bullets[i].off.x);
 		bullets[i].speed = spawner.speed;
 		bullets[i].clock = 0;
 		bullets[i].nextX = 0;

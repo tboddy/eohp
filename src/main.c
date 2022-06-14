@@ -75,9 +75,9 @@ void loadGame(){
 static void updateGame(){
 	updateBackground();
 	updateStage();
-	updateBullets();
 	updateEnemies();
 	updatePlayers();
+	updateBullets();
 	updateChrome();	
 	updateDialogue();
 	updateCutscenes();

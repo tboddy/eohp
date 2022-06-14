@@ -14,7 +14,7 @@
 
 // lifecycle
 
-void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
+void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide), void(*bossUpdater)){
 	s16 i = -1;
 	for(s16 j = 0; j < ENEMY_COUNT; j++) if(!enemies[j].active && i == -1) i = j;
 	if(i > -1){
@@ -23,11 +23,12 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
 		enemies[i].off.y = FIX16(spawner.offY);
 		enemies[i].pos.x = FIX16(spawner.x);
 		enemies[i].pos.y = FIX16(spawner.y);
-		enemies[i].dist = intToFix32(spawner.offX + 1);
+		enemies[i].dist = intToFix32(spawner.offX);
 		enemies[i].speed = spawner.speed;
 		enemies[i].angle = spawner.angle;
 		enemies[i].boss = spawner.boss;
 		enemies[i].shotClock = 0;
+		enemies[i].dead = FALSE;
 		enemies[i].health = spawner.health ? spawner.health : 1;
 		if(spawner.vel.x && spawner.vel.y){
 			enemies[i].vel.x = spawner.vel.x;
@@ -42,6 +43,7 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
 			enemies[i].fixes[j] = spawner.fixes[j];
 		}
 		enemies[i].updater = updater;
+		enemies[i].bossUpdater = bossUpdater;
 		enemies[i].suicide = suicide;
 		enemies[i].clock = 0;
 		enemies[i].seen = FALSE;
@@ -66,12 +68,7 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide)){
 }
 
 void killEnemy(s16 i){
-	enemies[i].active = FALSE;
-	SPR_releaseSprite(enemies[i].image);
-	if(enemies[i].seal){
-		enemies[i].seal = FALSE;
-		SPR_releaseSprite(enemies[i].sealImage);
-	}
+	enemies[i].dead = TRUE;
 }
 
 
@@ -131,6 +128,14 @@ static void updateEnemy(s16 i){
 					fix16ToInt(fix16Sub(enemies[i].pos.x, SEAL_OFF)),
 					fix16ToInt(fix16Sub(enemies[i].pos.y, SEAL_OFF)));
 			}
+		}
+	}
+	if(enemies[i].dead){
+		enemies[i].active = FALSE;
+		SPR_releaseSprite(enemies[i].image);
+		if(enemies[i].seal){
+			enemies[i].seal = FALSE;
+			SPR_releaseSprite(enemies[i].sealImage);
 		}
 	}
 }

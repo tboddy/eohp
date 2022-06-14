@@ -29,7 +29,7 @@ static void loadScore(){
 #define LIVES_Y 2
 
 static void loadLives(){
-	// for(u8 x = 0; x < 3; x++)
+	for(u8 x = 0; x < 3; x++)
 	VDP_drawText("#x2", LIVES_X, LIVES_Y);
 }
 
@@ -54,11 +54,36 @@ static void loadP2(){
 }
 
 
+// boss
+
+s16 lastBoss, bossBarW, bossBarOver;
+bool bossActive;
+
+#define BOSS_BAR_I 16
+#define BOSS_BAR_X 1
+#define BOSS_BAR_Y 3
+#define BOSS_BAR_W FIX16(30)
+#define BOSS_BAR_W_I fix16ToInt(BOSS_BAR_W)
+
+static void updateBoss(){
+	if(bossHealth != lastBoss && bossHealth > 0){
+		lastBoss = bossHealth;
+		bossBarW = fix16ToInt(fix16Mul(fix16Div(FIX16(bossHealth), FIX16(bossMax)), BOSS_BAR_W));
+		bossBarOver = BOSS_BAR_W_I - bossBarW;
+		if(bossActive) VDP_clearTileMapRect(BG_A, BOSS_BAR_X + bossBarW, BOSS_BAR_Y, bossBarOver, 1);
+		else {
+			bossActive = TRUE;
+			VDP_fillTileMapRect(BG_A, TILE_ATTR_FULL(PAL1, 1, 0, 0, BOSS_BAR_I), BOSS_BAR_X, BOSS_BAR_Y, bossBarW, 1);
+		}
+	} else if(bossHealth == 0 && bossActive) bossActive = FALSE;
+}
+
 
 
 // loop
 
 void loadChrome(){
+	VDP_loadTileSet(boss.tileset, BOSS_BAR_I, DMA);
 	loadScore();
 	loadLives();
 	loadBombs();
@@ -67,5 +92,6 @@ void loadChrome(){
 }
 
 void updateChrome(){
+	updateBoss();
 	// VDP_drawText(debugStr1, 0, 0);
 }

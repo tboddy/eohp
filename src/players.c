@@ -23,7 +23,7 @@ void spawnPlayer(bool p2){
 	players[i].pos.x = PLAYER_INIT_X;
 	players[i].pos.y = p2 ? PLAYER_INIT_Y_P2 : PLAYER_INIT_Y;
 	players[i].off.x = FIX16(16);
-	players[i].off.y = FIX16(20);
+	players[i].off.y = FIX16(16);
 	players[i].dist = FIX32(1);
 	players[i].p2 = p2;
 	players[i].image = SPR_addSprite(
@@ -31,7 +31,7 @@ void spawnPlayer(bool p2){
 		fix16ToInt(fix16Sub(players[i].pos.x, players[i].off.x)),
 		fix16ToInt(fix16Sub(players[i].pos.y, players[i].off.y)),
 		TILE_ATTR(PAL1, 0, 0, 0));
-	SPR_setDepth(players[i].image, 3);
+	SPR_setDepth(players[i].image, 5);
 }
 
 
@@ -86,14 +86,14 @@ static void updatePlayerAnimation(i){
 
 // shooting
 
-#define SHOT_INTERVAL 10
+#define SHOT_INTERVAL 12
 
 static void spawnPlayerBullet(u8 i){
 	struct bulletSpawner spawner = {
 		.x = players[i].pos.x,
 		.y = players[i].pos.y,
-		.image = players[i].p2 ? &smallYellowBullet : &smallWhiteBullet,
-		.speed = FIX16(16),
+		.image = players[i].p2 ? &playerBullet : &playerBullet,
+		.speed = FIX16(32),
 		.angle = 0,
 		.player = TRUE,
 		.p2 = players[i].p2

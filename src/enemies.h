@@ -15,7 +15,7 @@ struct enemySpawner {
 };
 
 struct enemy {
-	bool active, boss, seen, seal;
+	bool active, boss, seen, seal, dead;
 	fix16 speed;
 	fix32 dist;
 	Vect2D_f16 pos, vel, off;
@@ -23,6 +23,7 @@ struct enemy {
 	Sprite* image;
 	Sprite* sealImage;
 	void (*updater)(s16);
+	void (*bossUpdater)(s16);
 	void (*suicide)(s16);
 	bool bools[E_COUNT_INT];
 	s16 ints[E_COUNT_INT];

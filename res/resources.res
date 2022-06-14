@@ -5,7 +5,7 @@ IMAGE half "half.png" FAST
 IMAGE most "most.png" FAST
 IMAGE full "full.png" FAST
 
-SPRITE flandre "player/flandre.png" 4 5 FAST 0
+SPRITE flandre "player/flandre.png" 4 4 FAST 0
 SPRITE remilia "player/remilia.png" 3 4 FAST 0
 
 SPRITE fairy "enemies/fairy.png" 3 3 FAST 10
@@ -50,6 +50,8 @@ SPRITE bigPinkBullet "bullets/bigpink.png" 2 2 FAST 5
 SPRITE bigYellowBullet "bullets/bigyellow.png" 2 2 FAST 5
 SPRITE bigWhiteBullet "bullets/bigwhite.png" 2 2 FAST 5
 
+SPRITE playerBullet "bullets/player.png" 4 1 FAST 5
+
 SPRITE dialogueFlandre "dialogue/flandre.png" 9 9 FAST 0
 SPRITE dialogueWriggle "dialogue/wriggle.png" 7 9 FAST 0
 
@@ -63,3 +65,5 @@ SPRITE dialogueFaceIndifferent "dialogue/faces/indifferent.png" 4 4 FAST
 
 SPRITE explosion "explosion.png" 3 3 FAST 5
 SPRITE explosion2 "explosion2.png" 3 3 FAST 5
+
+IMAGE boss "boss.png" FAST

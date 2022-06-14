@@ -57,7 +57,7 @@ void transferBoss(s16 i){
 void bossFlyIn(s16 i){
 	// fly in
 	if(!enemies[i].bools[0] && enemies[i].clock % 10 == 5){
-		enemies[i].speed = fix16Sub(enemies[i].speed, FIX16(0.2));
+		enemies[i].speed = fix16Sub(enemies[i].speed, FIX16(0.15));
 		if(enemies[i].speed <= 0){
 			enemies[i].clock = 0;
 			enemies[i].speed = 0;
@@ -72,6 +72,57 @@ void bossFlyIn(s16 i){
 			enemies[i].angle = 256 + random() % 128;
 			enemies[i].bools[1] = TRUE;
 		}
+}
+
+void spawnBoss(s16 health, void(*bossUpdater)){
+	struct enemySpawner spawner = {
+		.angle = 512,
+		.speed = FIX16(1.25),
+		.y = GAME_H / 2,
+		.health = health,
+		.image = &fairy,
+		.offX = 12,
+		.offY = 12,
+		.x = GAME_W + 12,
+		.seal = TRUE
+	};
+	bossMax = spawner.health;
+	void updater(s16 i){
+		bossFlyIn(i);
+		if(enemies[i].bools[1]){
+			if(bossHealth != enemies[i].health) bossHealth = enemies[i].health;
+			enemies[i].bossUpdater(i);
+			// if((enemies[i].clock >= 0 && enemies[i].clock % 240 < 120) || enemies[i].clock % 240 < 0){
+			// 	if(enemies[i].clock % 120 == 0){
+			// 		enemies[i].speed = 0;
+			// 		updateEnemyVel(i);
+			// 	}
+			// 	if(enemies[i].clock >= 0) enemies[i].bossUpdater(i);
+			// } else {
+			// 	if(enemies[i].clock % 240 == 120){
+			// 		enemies[i].speed = FIX16(0.8);
+			// 		enemies[i].angle = random() % 256 + 128;
+			// 		if(enemies[i].clock % 480 == 120) enemies[i].angle += 512;
+			// 		updateEnemyVel(i);
+			// 	} else if(enemies[i].clock % 240 == 150){
+			// 		enemies[i].speed = FIX16(0.6);
+			// 		updateEnemyVel(i);
+			// 	} else if(enemies[i].clock % 240 == 180){
+			// 		enemies[i].speed = FIX16(0.4);
+			// 		updateEnemyVel(i);
+			// 	} else if(enemies[i].clock % 240 == 210){
+			// 		enemies[i].speed = FIX16(0.2);
+			// 		updateEnemyVel(i);
+			// 	}
+			// 	bossMove(i);
+			// }
+		}
+	}
+	void suicide(s16 i){
+		killBullets = TRUE;
+		waveClock = 60;
+	}
+	spawnEnemy(spawner, updater, suicide, bossUpdater);
 }
 
 

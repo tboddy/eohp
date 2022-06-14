@@ -9,7 +9,7 @@ bool started;
 #define GAME_TILE_W GAME_W / 8
 #define GAME_TILE_H GAME_H / 8
 
-s16 clock, bossHealth;
+s16 clock, bossHealth, bossMax;
 #define CLOCK_LIMIT 32000
 
 void EMPTY(u8),
