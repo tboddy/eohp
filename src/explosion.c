@@ -15,8 +15,8 @@ void spawnExplosion(fix16 x, fix16 y){
 	explosions[i].active = TRUE;
 	explosions[i].clock = 0;
 	explosions[i].image = SPR_addSprite(&explosion,
-		fix16ToInt(fix16Sub(x, EXPLOSION_OFFSET)),
-		fix16ToInt(fix16Sub(y, EXPLOSION_OFFSET)),
+		fix16ToInt(fix16Sub(x, EXPLOSION_OFFSET)) + GAME_X,
+		fix16ToInt(fix16Sub(y, EXPLOSION_OFFSET)) + GAME_Y,
 		TILE_ATTR(PAL1, 1, 0, 0));
 	SPR_setDepth(explosions[i].image, 3);
 }

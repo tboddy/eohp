@@ -23,7 +23,7 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide), voi
 		enemies[i].off.y = FIX16(spawner.offY);
 		enemies[i].pos.x = FIX16(spawner.x);
 		enemies[i].pos.y = FIX16(spawner.y);
-		enemies[i].dist = intToFix32(spawner.offX);
+		enemies[i].dist = intToFix32(spawner.offX - 2);
 		enemies[i].speed = spawner.speed;
 		enemies[i].angle = spawner.angle;
 		enemies[i].boss = spawner.boss;
@@ -48,8 +48,8 @@ void spawnEnemy(struct enemySpawner spawner, void(*updater), void(*suicide), voi
 		enemies[i].clock = 0;
 		enemies[i].seen = FALSE;
 		enemies[i].image = SPR_addSprite(spawner.image,
-			fix16ToInt(fix16Sub(enemies[i].pos.x, enemies[i].off.x)),
-			fix16ToInt(fix16Sub(enemies[i].pos.y, enemies[i].off.y)),
+			fix16ToInt(fix16Sub(enemies[i].pos.x, enemies[i].off.x)) + GAME_X,
+			fix16ToInt(fix16Sub(enemies[i].pos.y, enemies[i].off.y)) + GAME_Y,
 			TILE_ATTR(PAL1, 0, 0, 0));
 		SPR_setAnim(enemies[i].image, spawner.anim ? spawner.anim : 0);
 		SPR_setFrame(enemies[i].image, spawner.frame ? spawner.frame : 0);
@@ -119,14 +119,14 @@ static void updateEnemy(s16 i){
 			if(enemies[i].boss) bossHealth = enemies[i].health;
 			collideEnemy(i);
 			enemies[i].clock++;
-			if(clock >= CLOCK_LIMIT) clock -= CLOCK_LIMIT;
+			if(enemies[i].clock >= CLOCK_LIMIT) enemies[i].clock -= CLOCK_LIMIT;
 			SPR_setPosition(enemies[i].image,
-				fix16ToInt(fix16Sub(enemies[i].pos.x, enemies[i].off.x)),
-				fix16ToInt(fix16Sub(enemies[i].pos.y, enemies[i].off.y)));
+				fix16ToInt(fix16Sub(enemies[i].pos.x, enemies[i].off.x)) + GAME_X,
+				fix16ToInt(fix16Sub(enemies[i].pos.y, enemies[i].off.y)) + GAME_Y);
 			if(enemies[i].seal){
 				SPR_setPosition(enemies[i].sealImage,
-					fix16ToInt(fix16Sub(enemies[i].pos.x, SEAL_OFF)),
-					fix16ToInt(fix16Sub(enemies[i].pos.y, SEAL_OFF)));
+					fix16ToInt(fix16Sub(enemies[i].pos.x, SEAL_OFF)) + GAME_X,
+					fix16ToInt(fix16Sub(enemies[i].pos.y, SEAL_OFF)) + GAME_Y);
 			}
 		}
 	}

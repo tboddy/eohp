@@ -1,0 +1,4 @@
+// bosses
+
+void loadBoss(),
+	updateBoss();

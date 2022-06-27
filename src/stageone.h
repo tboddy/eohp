@@ -1,3 +1,0 @@
-// stage one
-
-void updateStageOne();

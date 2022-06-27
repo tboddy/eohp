@@ -15,11 +15,11 @@ struct bulletSpawner {
 };
 
 struct bullet {
-	bool active, player, p2, ball, flipped, powerup, dead;
+	bool active, player, p2, ball, flipped, dead, used;
 	fix16 speed;
 	fix32 dist;
-	Vect2D_f16 pos, vel, off;
-	s16 angle, clock, nextX, nextY, currentX, currentY;
+	Vect2D_f16 pos, vel, off, next;
+	s16 angle, clock, hitClock;
 	Sprite* image;
 	void (*updater)(s16);
 	bool bools[B_COUNT_INT];

@@ -4,10 +4,16 @@ bool started;
 
 // metrics
 
-#define GAME_W 256
-#define GAME_H 224
+#define GAME_W 224
+#define GAME_H 192
+#define GAME_X 16
+#define GAME_Y 32
+#define WIN_W 320
+#define WIN_H 224
 #define GAME_TILE_W GAME_W / 8
 #define GAME_TILE_H GAME_H / 8
+#define WIN_TILE_W WIN_W / 8
+#define WIN_TILE_H WIN_H / 8
 
 s16 clock, bossHealth, bossMax;
 #define CLOCK_LIMIT 32000

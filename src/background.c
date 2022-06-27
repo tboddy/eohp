@@ -10,56 +10,79 @@
 // scrolling
 
 #define BG_I 64
+#define BG_X 2
+#define BG_W GAME_TILE_W
 
 s16 bgScrollsA[GAME_TILE_H];
-s16 bgScrollsB[GAME_TILE_H];
+s16 bgScrollsB[GAME_TILE_H + 4];
 s16 bgClock;
 
 
 // stage one
 
+#define STAGE_ONE_SKY_H 4
+#define STAGE_ONE_SKY_1_Y 4
+#define STAGE_ONE_SKY_2_Y STAGE_ONE_SKY_1_Y + STAGE_ONE_SKY_H
+#define STAGE_ONE_SKY_4_Y STAGE_ONE_SKY_2_Y + 2
+#define STAGE_ONE_SKY_5_Y STAGE_ONE_SKY_4_Y + STAGE_ONE_SKY_H
+#define STAGE_ONE_SKY_6_Y STAGE_ONE_SKY_5_Y + 2
+
 #define STAGE_ONE_WATER_Y 19
-#define STAGE_ONE_WATER_W 12
+#define STAGE_ONE_WATER_W 14
 #define STAGE_ONE_WATER_LIMIT STAGE_ONE_WATER_W * -8
-#define STAGE_ONE_SKY_Y 4
-#define STAGE_ONE_SKY_H 11
-#define STAGE_ONE_SKY2_H 4
+
 #define STAGE_ONE_CLOUDS_Y 7
 #define STAGE_ONE_CLOUDS_W 32
 #define STAGE_ONE_CLOUDS_LIMIT STAGE_ONE_CLOUDS_W * -8
 
 static void loadStageOne(){
-	VDP_loadTileSet(stageOneSky2.tileset, BG_I + 84 + 352, DMA);
-	VDP_loadTileSet(stageOneWater2.tileset, BG_I + 84 + 352 + 1, DMA);
-	// water
-	for(u8 x = 0; x < 4; x++)
-		VDP_drawImageEx(BG_B, &stageOneWater, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I), x * STAGE_ONE_WATER_W, STAGE_ONE_WATER_Y, 0, DMA);
-	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352 + 1), 0, 26, GAME_TILE_W, 2);
+
 	// sky
-	VDP_drawImageEx(BG_B, &stageOneSky, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84), 0, STAGE_ONE_SKY_Y, 0, DMA);
-	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352), 0, STAGE_ONE_SKY_Y + STAGE_ONE_SKY_H, GAME_TILE_W, STAGE_ONE_SKY2_H);
+	VDP_loadTileSet(stageOneSky1.tileset, BG_I, DMA);
+	VDP_loadTileSet(stageOneSky2.tileset, BG_I + 1, DMA);
+	VDP_loadTileSet(stageOneSky3.tileset, BG_I + 2, DMA);
+	VDP_loadTileSet(stageOneSky4.tileset, BG_I + 3, DMA);
+	VDP_loadTileSet(stageOneSky5.tileset, BG_I + 4, DMA);
+	VDP_loadTileSet(stageOneSky6.tileset, BG_I + 5, DMA);
+	VDP_loadTileSet(stageOneSky7.tileset, BG_I + 6, DMA);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I), BG_X, STAGE_ONE_SKY_1_Y, BG_W, STAGE_ONE_SKY_H);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 1), BG_X, STAGE_ONE_SKY_2_Y, BG_W, 1);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 2), BG_X, STAGE_ONE_SKY_2_Y + 1, BG_W, 1);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 3), BG_X, STAGE_ONE_SKY_4_Y, BG_W, STAGE_ONE_SKY_H);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 4), BG_X, STAGE_ONE_SKY_5_Y, BG_W, 1);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 5), BG_X, STAGE_ONE_SKY_5_Y + 1, BG_W, 1);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 6), BG_X, STAGE_ONE_SKY_6_Y, BG_W, STAGE_ONE_SKY_H);
+
+	// water
+	VDP_loadTileSet(stageOneWater2.tileset, BG_I + 7, DMA);
+	for(u8 x = 0; x < 4; x++)
+		VDP_drawImageEx(BG_B, &stageOneWater, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 8), x * STAGE_ONE_WATER_W, STAGE_ONE_WATER_Y, 0, DMA);
+	VDP_fillTileMapRect(BG_B, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 7), BG_X, STAGE_ONE_WATER_Y + 6, BG_W, 3);
+
+
 	// clouds
-	for(u8 x = 0; x < 2; x++)
-		VDP_drawImageEx(BG_A, &stageOneClouds, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352 + 2), x * STAGE_ONE_CLOUDS_W, STAGE_ONE_CLOUDS_Y, 0, DMA);
+	// for(u8 x = 0; x < 2; x++)
+	// 	VDP_drawImageEx(BG_A, &stageOneClouds, TILE_ATTR_FULL(PAL2, 0, 0, 0, BG_I + 84 + 352 + 2), x * STAGE_ONE_CLOUDS_W, STAGE_ONE_CLOUDS_Y, 0, DMA);
 }
 
 static void updateStageOne(){
-	for(u8 y = 0; y < GAME_TILE_H; y++){
+	for(u8 y = 0; y < GAME_TILE_H + 4; y++){
 		// water
-		if(y >= STAGE_ONE_WATER_Y){
-			for(u8 i = 0; i < 4; i++){
-				if(y - STAGE_ONE_WATER_Y == i) bgScrollsB[y] -= i + 1;
-			}
+		if(y >= STAGE_ONE_WATER_Y && y < STAGE_ONE_WATER_Y + 6){
+			bgScrollsB[y]--;
+			if(y >= STAGE_ONE_WATER_Y + 1) bgScrollsB[y]--;
+			if(y >= STAGE_ONE_WATER_Y + 2) bgScrollsB[y]--;
+			if(y >= STAGE_ONE_WATER_Y + 4) bgScrollsB[y] -= 2;
 			if(bgScrollsB[y] <= STAGE_ONE_WATER_LIMIT) bgScrollsB[y] -= STAGE_ONE_WATER_LIMIT;
 		}
 		// clouds
-		if(y >= STAGE_ONE_CLOUDS_Y && y < STAGE_ONE_WATER_Y && bgClock % 5 == 0){
-			bgScrollsA[y] -= 2;
-			if(bgScrollsA[y] <= STAGE_ONE_CLOUDS_LIMIT) bgScrollsA[y] -= STAGE_ONE_CLOUDS_LIMIT;
-		}
+		// if(y >= STAGE_ONE_CLOUDS_Y && y < STAGE_ONE_WATER_Y && bgClock % 5 == 0){
+		// 	bgScrollsA[y] -= 2;
+		// 	if(bgScrollsA[y] <= STAGE_ONE_CLOUDS_LIMIT) bgScrollsA[y] -= STAGE_ONE_CLOUDS_LIMIT;
+		// }
 	}
-	VDP_setHorizontalScrollTile(BG_A, 0, bgScrollsA, GAME_TILE_H, DMA);
-	VDP_setHorizontalScrollTile(BG_B, 0, bgScrollsB, GAME_TILE_H, DMA);
+	// VDP_setHorizontalScrollTile(BG_A, 0, bgScrollsA, GAME_TILE_H, DMA);
+	VDP_setHorizontalScrollTile(BG_B, 0, bgScrollsB, GAME_TILE_H + 4, DMA);
 }
 
 
@@ -169,7 +192,7 @@ void loadBackground(){
 }
 
 void updateBackground(){
-	updateStageOne();
+	if(bgClock % 2 == 1) updateStageOne();
 	// updateStageTwo();
 	// updateStageThree();
 	bgClock++;

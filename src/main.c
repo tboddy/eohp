@@ -13,6 +13,7 @@
 #include "chrome.h"
 #include "start.h"
 #include "explosion.h"
+#include "powerups.h"
 
 // resources
 
@@ -66,10 +67,10 @@ void loadGame(){
 	started = TRUE;
 	VDP_clearPlane(BG_A, TRUE);
 	VDP_clearPlane(BG_B, TRUE);
+	loadChrome();
 	loadBackground();
 	loadPlayers();
 	loadStage();
-	loadChrome();
 }
 
 static void updateGame(){
@@ -82,6 +83,7 @@ static void updateGame(){
 	updateDialogue();
 	updateCutscenes();
 	updateExplosions();
+	updatePowerups();
 	clock++;
 	if(clock >= CLOCK_LIMIT) clock -= CLOCK_LIMIT;
 }
